@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Astra1st</string>
+    <string name="login">LOGIN</string>
+    <string name="title_activity_recording">recording</string>
+</resources>
