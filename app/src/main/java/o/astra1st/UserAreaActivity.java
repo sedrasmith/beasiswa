@@ -32,7 +32,6 @@ import java.io.File;
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
     //-------- var tab 1 ------------//
-    Integer[] image = {R.drawable.coba_1, R.drawable.coba_2, R.drawable.coba_3};
     String[]  judul_tutorial_utama = {"Pakaian","Lingkungan","Konektivitas"};
     String[]  penjelasan_tutorial_utama = {"Anda diwajibkan untuk menggunakan kemeja, dasi dan jas saat melakukan wawancara ini. Pastikan baju anda rapih selama wawancara ini berlangsung"
                                           ,"Pastikan anda berada pada tempat yang hening agar jawaban anda dapat terdengar dan memiliki pencahayaan yang cukup sehingga rekaman dapat terlihat dengan jelas."
@@ -74,8 +73,6 @@ public class UserAreaActivity extends AppCompatActivity {
 
         //----------------------------Tab 1-------------------------------
 
-        viewAnimator = (ViewAnimator) findViewById(R.id.animator);
-
         final Animation inAnim = AnimationUtils.loadAnimation(this,R.anim.in);
         final Animation outAnim = AnimationUtils.loadAnimation(this,R.anim.out);
         final Animation inAnim_1 = AnimationUtils.loadAnimation(this,R.anim.in1);
@@ -110,50 +107,6 @@ public class UserAreaActivity extends AppCompatActivity {
         out = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out);
         in1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.in1);
         out1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out1);
-
-
-        next = (ImageButton) findViewById(R.id.next1);
-        prev = (ImageButton) findViewById(R.id.prev1);
-
-        //imageTutorial.setImageResource(image[0]);
-
-        prev.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                //imageTutorial.setInAnimation(in);
-                //imageTutorial.setOutAnimation(out);
-                //cardview_tutorial.startAnimation(in);
-                //cardview_tutorial.startAnimation(out);
-                viewAnimator.setInAnimation(inAnim);
-                viewAnimator.setOutAnimation(outAnim);
-                if (i > 0) {
-                    i--;
-                    //imageTutorial.setImageResource(image[i]);
-                    //judul.setText(judul_tutorial_utama[i]);
-                    //penjelasan.setText(penjelasan_tutorial_utama[i]);
-                    viewAnimator.showPrevious();
-
-                }
-            }
-        });
-
-        next.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                //imageTutorial.setInAnimation(in1);
-                //imageTutorial.setOutAnimation(out1);
-                //cardview_tutorial.startAnimation(out);
-                //cardview_tutorial.startAnimation(out1);
-                viewAnimator.setInAnimation(inAnim_1);
-                viewAnimator.setOutAnimation(outAnim_1);
-                if (i < image.length - 1) {
-                    i++;
-                   // imageTutorial.setImageResource(image[i]);
-                    //judul.setText(judul_tutorial_utama[i]);
-                   // penjelasan.setText(penjelasan_tutorial_utama[i]);
-                    viewAnimator.showNext();
-                }
-            }
-        });
 
         //----------------------------Tab 1-------------------------------
 
