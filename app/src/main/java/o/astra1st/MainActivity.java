@@ -31,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private TextureView mPreview;
     private MediaRecorder mMediaRecorder;
     private File mOutputFile;
-    private TextView timer;
+    private TextView timer,pertanyaan;
+    private boolean isInterview = false;
+    private boolean isInterviewdone = false;
+    private int counter_pertanyaan = 0;
 
     private boolean isRecording = false;
     private static final String TAG = "Recorder";
@@ -45,13 +48,15 @@ public class MainActivity extends AppCompatActivity {
         mPreview = (TextureView) findViewById(R.id.surfaceView);
         captureButton = (Button) findViewById(R.id.go);
         timer = (TextView) findViewById(R.id.timer);
+        pertanyaan = (TextView) findViewById(R.id.pertanyaan);
 
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onCaptureClick();
+                Switch();
             }
         });
 
+        /*
         onCaptureClick();
         new CountDownTimer(10000, 1000) {
 
@@ -64,8 +69,75 @@ public class MainActivity extends AppCompatActivity {
                 onCaptureClick();
             }
         }.start();
+        */
 
     }
+
+    public void Switch()
+    {
+        if (counter_pertanyaan<=5)
+        {
+            if (isInterview)
+            {
+                //-------tahap siap siap--------
+                new CountDownTimer(4000, 1000)
+                {
+
+                    //tampilin sisa waktu
+                    public void onTick(long millisUntilFinished) {
+                        timer.setText("" + millisUntilFinished / 1000);
+                    }
+
+                    //stop jika waktu habis
+                    public void onFinish() {
+                        isInterview = false;
+                        Switch();
+                    }
+                }.start();
+
+            }
+            else
+            {
+                //-------mulai interview--------
+
+                pertanyaan.setText("interview");
+                //mulai ngerekam
+                onCaptureClick();
+
+                //mulai countdown
+                new CountDownTimer(10000, 1000)
+                {
+                    //tampilin sisa waktu
+                    public void onTick(long millisUntilFinished) {
+                        timer.setText("" + millisUntilFinished / 1000);
+                    }
+
+                    //stop jika waktu habis
+                    public void onFinish() {
+                        timer.setText("done!");
+                        //stop ngerekam
+                        onCaptureClick();
+                        counter_pertanyaan++;
+                        isInterview = true;
+                        pertanyaan.setText("siapsiap");
+                        Switch();
+                    }
+                }.start();
+
+            }
+        }
+        else
+        {
+            pertanyaan.setText("beres!!!");
+        }
+
+    }
+
+
+
+
+
+
     /**
      * The capture button controls all user interaction. When recording, the button click
      * stops recording, releases {@link android.media.MediaRecorder} and {@link android.hardware.Camera}. When not recording,
@@ -91,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             mCamera.lock();         // take camera access back from MediaRecorder
 
             // inform the user that recording has stopped
-            setCaptureButtonText("Capture");
+            setCaptureButtonText("Start");
             isRecording = false;
             releaseCamera();
             // END_INCLUDE(stop_release_media_recorder)

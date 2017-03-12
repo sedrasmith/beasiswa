@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -32,14 +31,9 @@ import java.io.File;
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
     //-------- var tab 1 ------------//
-    String[]  judul_tutorial_utama = {"Pakaian","Lingkungan","Konektivitas"};
-    String[]  penjelasan_tutorial_utama = {"Anda diwajibkan untuk menggunakan kemeja, dasi dan jas saat melakukan wawancara ini. Pastikan baju anda rapih selama wawancara ini berlangsung"
-                                          ,"Pastikan anda berada pada tempat yang hening agar jawaban anda dapat terdengar dan memiliki pencahayaan yang cukup sehingga rekaman dapat terlihat dengan jelas."
-                                          ,"Pastikan anda memiliki koneksi internet yang baik, disarankan menggunakan Wi-Fi agar pengunggahan video tidak memakan waktu yang lama"};
     //ImageSwitcher imageTutorial;
     TextView judul,penjelasan;
     CardView cardview_tutorial;
-    ImageButton next, prev;
     Animation in, in1, out, out1;
     int i = 0;
     ViewAnimator viewAnimator;
@@ -112,11 +106,13 @@ public class UserAreaActivity extends AppCompatActivity {
 
 
 
-        //Tab 2
+        //----------------------------Tab 2-------------------------------
         spec = host.newTabSpec("Tab Two");
         spec.setContent(R.id.tab2);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab2));
         host.addTab(spec);
+        //----------------------------Tab 2-------------------------------
+
 
         //----------------------------Tab 3-------------------------------
 

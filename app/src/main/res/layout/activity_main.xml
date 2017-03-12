@@ -29,7 +29,8 @@
             android:id="@+id/go"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="20dp"
-            android:elevation="1dp" />
+            android:elevation="1dp"
+            android:background="@drawable/roundbutton" />
 
         <TextView
             android:text="oi"
@@ -40,6 +41,12 @@
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="20dp"
             android:textSize="30sp" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pertanyaan" />
 
     </FrameLayout>
 </RelativeLayout>
