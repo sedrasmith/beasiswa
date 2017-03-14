@@ -9,12 +9,21 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,12 +125,48 @@ public class MainActivity extends AppCompatActivity {
             releaseMediaRecorder();
            // return false;
         }
-        mCamera.setPreview;
-        mCamera.startPreview();
+
+        mMediaRecorder.resume();
+
 
 
         //AAAAAAAAAa
         */
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference islandRef;
+
+        islandRef = storageRef.child("petanyaan/pertanyaan.txt");
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CameraSample");
+
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "pertanyaan"+".txt");
+
+        /*
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("pertanyaan", "txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
+
+        islandRef.getFile(mediaFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                // Local temp file has been created
+                Toast.makeText(getApplicationContext(), "downloaded yeay", Toast.LENGTH_LONG).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Switch();
@@ -131,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void Switch()
     {
-        if (counter_pertanyaan<=5)
+        if (counter_pertanyaan<=2)
         {
             if (isInterview)
             {
