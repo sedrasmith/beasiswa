@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder mMediaRecorder;
     private File mOutputFile;
     private TextView timer,pertanyaan;
-    private boolean isInterview = false;
+    private boolean isInterview = true;
     private boolean isInterviewdone = false;
     private int counter_pertanyaan = 0;
 
@@ -50,27 +50,83 @@ public class MainActivity extends AppCompatActivity {
         timer = (TextView) findViewById(R.id.timer);
         pertanyaan = (TextView) findViewById(R.id.pertanyaan);
 
+        /*
+        //AAAAAAAAAa
+
+        // BEGIN_INCLUDE (configure_preview)
+        mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
+
+        // We need to make sure that our preview and recording video size are supported by the
+        // camera. Query camera to find all the sizes and choose the optimal size given the
+        // dimensions of our preview surface.
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> mSupportedPreviewSizes = parameters.getSupportedPreviewSizes();
+        List<Camera.Size> mSupportedVideoSizes = parameters.getSupportedVideoSizes();
+        Camera.Size optimalSize = CameraHelper.getOptimalVideoSize(mSupportedVideoSizes,
+                mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
+
+        // Use the same size for recording profile.
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+        profile.videoFrameWidth = optimalSize.width;
+        profile.videoFrameHeight = optimalSize.height;
+
+        // likewise for the camera object itself.
+        parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+        //parameters.setRotation(0);
+        mCamera.setParameters(parameters);
+        //mCamera.setDisplayOrientation(90);
+
+        try {
+            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
+            // with {@link SurfaceView}
+            mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
+        } catch (IOException e) {
+            Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
+        }
+        // END_INCLUDE (configure_preview)
+
+
+        // BEGIN_INCLUDE (configure_media_recorder)
+        mMediaRecorder = new MediaRecorder();
+
+        mCamera.setDisplayOrientation(90);
+        mMediaRecorder.setOrientationHint(270);
+
+        // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
+        mMediaRecorder.setCamera(mCamera);
+
+
+        // Step 2: Set sources
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT );
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+        mMediaRecorder.setProfile(profile);
+
+        // Step 5: Prepare configured MediaRecorder
+        try {
+            mMediaRecorder.prepare();
+        } catch (IllegalStateException e) {
+            Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+            //return false;
+        } catch (IOException e) {
+            Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+           // return false;
+        }
+        mCamera.setPreview;
+        mCamera.startPreview();
+
+
+        //AAAAAAAAAa
+        */
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Switch();
             }
         });
-
-        /*
-        onCaptureClick();
-        new CountDownTimer(10000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                timer.setText("" + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                timer.setText("done!");
-                onCaptureClick();
-            }
-        }.start();
-        */
-
     }
 
     public void Switch()
@@ -165,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             // inform the user that recording has stopped
             setCaptureButtonText("Start");
             isRecording = false;
-            releaseCamera();
+            //releaseCamera();
             // END_INCLUDE(stop_release_media_recorder)
 
         } else {
