@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +21,16 @@ import android.widget.ViewAnimator;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 
 public class UserAreaActivity extends AppCompatActivity {
@@ -126,8 +131,76 @@ public class UserAreaActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
-                UserAreaActivity.this.startActivity(intent);
+                //download pertanyaan
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                StorageReference islandRef;
+
+                islandRef = storageRef.child("petanyaan/pertanyaan.txt");
+
+                File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "CameraSample");
+
+                final File mediaFile;
+                mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                        "pertanyaan"+".txt");
+
+
+
+                islandRef.getFile(mediaFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        //read file.txt
+                        try {
+                            FileInputStream fIn = new FileInputStream(mediaFile);
+                            BufferedReader myReader = new BufferedReader(
+                                    new InputStreamReader(fIn));
+                            String aDataRow = "";
+                            String aBuffer = "";
+                            while ((aDataRow = myReader.readLine()) != null) {
+                                aBuffer += aDataRow + "\n";
+                            }
+                            myReader.close();
+                            String[] separated = aBuffer.split(",");
+                            int length = separated.length;
+                            Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_LONG).show();
+
+                        } catch (Exception e) {
+                            Toast.makeText(getBaseContext(), e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+
+                        new CountDownTimer(1000, 1000)
+                        {
+                            public void onTick(long millisUntilFinished) {   }
+
+                            //delay 1 detik terus ganti halaman
+                            public void onFinish()
+                            {
+
+
+
+
+
+                                Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
+                                UserAreaActivity.this.startActivity(intent);
+
+
+                            }
+
+                        }.start();
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+
+
+
             }
 
         });
