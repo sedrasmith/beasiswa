@@ -134,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         */
-
-
+        Bundle bundle = getIntent().getExtras();
+        String[] separated = bundle.getStringArray("daftarPertanyaan");
+        pertanyaan.setText(separated[0]);
 
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

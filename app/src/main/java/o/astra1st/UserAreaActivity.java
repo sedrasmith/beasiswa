@@ -160,37 +160,27 @@ public class UserAreaActivity extends AppCompatActivity {
                                 aBuffer += aDataRow + "\n";
                             }
                             myReader.close();
-                            String[] separated = aBuffer.split(",");
+                            final String[] separated = aBuffer.split(",");
                             int length = separated.length;
                             Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_LONG).show();
+
+                            new CountDownTimer(1000, 1000)
+                            {
+                                public void onTick(long millisUntilFinished) {   }
+
+                                //delay 1 detik terus ganti halaman
+                                public void onFinish()
+                                {
+                                    Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
+                                    intent.putExtra("daftarPertanyaan", separated);
+                                    UserAreaActivity.this.startActivity(intent);
+                                }
+                            }.start();
 
                         } catch (Exception e) {
                             Toast.makeText(getBaseContext(), e.getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
-
-
-                        new CountDownTimer(1000, 1000)
-                        {
-                            public void onTick(long millisUntilFinished) {   }
-
-                            //delay 1 detik terus ganti halaman
-                            public void onFinish()
-                            {
-
-
-
-
-
-                                Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
-                                UserAreaActivity.this.startActivity(intent);
-
-
-                            }
-
-                        }.start();
-
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
