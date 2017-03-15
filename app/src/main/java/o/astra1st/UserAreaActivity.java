@@ -138,7 +138,7 @@ public class UserAreaActivity extends AppCompatActivity {
                 islandRef = storageRef.child("petanyaan/pertanyaan.txt");
 
                 File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "CameraSample");
+                        Environment.DIRECTORY_PICTURES), "Pertanyaan");
 
                 final File mediaFile;
                 mediaFile = new File(mediaStorageDir.getPath() + File.separator +
@@ -157,7 +157,7 @@ public class UserAreaActivity extends AppCompatActivity {
                             String aDataRow = "";
                             String aBuffer = "";
                             while ((aDataRow = myReader.readLine()) != null) {
-                                aBuffer += aDataRow + "\n";
+                                aBuffer += aDataRow;
                             }
                             myReader.close();
                             final String[] separated = aBuffer.split(",");
@@ -199,7 +199,12 @@ public class UserAreaActivity extends AppCompatActivity {
         //----------------------------Tab 3-------------------------------
 
         //----------------------------Tab 4-------------------------------
+
+        File[] dir;
+        TextView keterangan;
+        ///debug
         buttonUpload = (Button) findViewById(R.id.upload);
+        keterangan = (TextView) findViewById(R.id.keteranganfile);
         storageReference = FirebaseStorage.getInstance().getReference();
 
         spec = host.newTabSpec("Tab Four");
@@ -207,6 +212,13 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab4));
         host.addTab(spec);
 
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+        //+ File.separator + "VID_"+ "1" + ".mp4");
+
+        dir = file.listFiles();
+
+        keterangan.setText("jumlah file = " + dir.length);
 
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
@@ -224,58 +236,67 @@ public class UserAreaActivity extends AppCompatActivity {
     private void uploadFile() {
         //if there is a file to upload
         File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample" + File.separator +
-                "VID_"+ "1" + ".mp4");
+                Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+        //+ File.separator + "VID_"+ "1" + ".mp4");
 
-        Intent data = new Intent();
-        data.setData(Uri.fromFile(file));
-        filePath = data.getData();
+        File[] direktori = file.listFiles();
 
-        if (filePath != null) {
-            //displaying a progress dialog while upload is going on
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
+        for (int u = 0; u < direktori.length; u++)
+        {
+            Intent data = new Intent();
+            data.setData(Uri.fromFile(direktori[u]));
+            filePath = data.getData();
 
-            StorageReference riversRef = storageReference.child("images/VID_1.mp4");
-            riversRef.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //if the upload is successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
+            if (filePath != null) {
+                //displaying a progress dialog while upload is going on
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Uploading");
+                progressDialog.show();
 
-                            //and displaying a success toast
-                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
+                StorageReference riversRef = storageReference.child("images/VID_" + u + ".mp4");
+                riversRef.putFile(filePath)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                //if the upload is successfull
+                                //hiding the progress dialog
+                                progressDialog.dismiss();
 
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //calculating progress percentage
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                //and displaying a success toast
+                                Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                //if the upload is not successfull
+                                //hiding the progress dialog
+                                progressDialog.dismiss();
 
-                            //displaying percentage in progress dialog
-                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                        }
-                    });
+                                //and displaying error message
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                //calculating progress percentage
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                                //displaying percentage in progress dialog
+                                progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                            }
+                        });
+            }
+            //if there is not any file
+            else {
+                Toast.makeText(getApplicationContext(), "faill", Toast.LENGTH_LONG).show();
+            }
         }
-        //if there is not any file
-        else {
-            Toast.makeText(getApplicationContext(), "faill", Toast.LENGTH_LONG).show();
-        }
+
+
+
+
     }
 
 

@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRecording = false;
     private static final String TAG = "Recorder";
     private Button captureButton;
+    String[] separated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         }
         */
         Bundle bundle = getIntent().getExtras();
-        String[] separated = bundle.getStringArray("daftarPertanyaan");
-        pertanyaan.setText(separated[0]);
+        separated = bundle.getStringArray("daftarPertanyaan");
+
 
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void Switch()
     {
-        if (counter_pertanyaan<=2)
+        if (counter_pertanyaan < separated.length)
         {
             if (isInterview)
             {
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 //-------mulai interview--------
 
-                pertanyaan.setText("interview");
+                pertanyaan.setText(separated[counter_pertanyaan]);
                 //mulai ngerekam
                 onCaptureClick();
 
