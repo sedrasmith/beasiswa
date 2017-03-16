@@ -46,7 +46,7 @@
 
                     <include
                         android:id="@+id/tab1"
-                        layout="@layout/activity_tutoial"
+                        layout="@layout/activity_intro"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         ></include>

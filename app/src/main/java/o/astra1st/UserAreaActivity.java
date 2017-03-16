@@ -1,23 +1,27 @@
 package o.astra1st;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewAnimator;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,12 +40,12 @@ import java.io.InputStreamReader;
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
     //-------- var tab 1 ------------//
-    //ImageSwitcher imageTutorial;
-    TextView judul,penjelasan;
-    CardView cardview_tutorial;
-    Animation in, in1, out, out1;
-    int i = 0;
-    ViewAnimator viewAnimator;
+    private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private LinearLayout dotsLayout;
+    private TextView[] dots;
+    private int[] layouts;
+    private Button btnSkip, btnNext;
     //-------- var tab 1 ------------//
 
     //-------- var tab 4 ------------//
@@ -72,40 +76,29 @@ public class UserAreaActivity extends AppCompatActivity {
 
         //----------------------------Tab 1-------------------------------
 
-        final Animation inAnim = AnimationUtils.loadAnimation(this,R.anim.in);
-        final Animation outAnim = AnimationUtils.loadAnimation(this,R.anim.out);
-        final Animation inAnim_1 = AnimationUtils.loadAnimation(this,R.anim.in1);
-        final Animation outAnim_1 = AnimationUtils.loadAnimation(this,R.anim.out1);
-
         TabHost.TabSpec spec = host.newTabSpec("Petunjuk");
         spec.setContent(R.id.tab1);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab1));
         host.addTab(spec);
 
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
+        btnSkip = (Button) findViewById(R.id.btn_skip);
+        btnNext = (Button) findViewById(R.id.btn_next);
 
-        //imageTutorial = (ImageSwitcher) findViewById(R.id.imageTutorial);
-        //judul = (TextView) findViewById(R.id.judul_tutorial);
-        // penjelasan = (TextView) findViewById(R.id.penjelasan_tutorial);
-        //cardview_tutorial = (CardView) findViewById(R.id.cardview_tutorial);
-        /*
-        imageTutorial.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                ImageView imageView = new ImageView(getApplicationContext());
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setLayoutParams(
-                        new ImageSwitcher.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT));
-                return imageView;
-            }
-        });
-        */
+        layouts = new int[]{
+                R.layout.slide1,
+                R.layout.slide2,
+                R.layout.slide3,
+                R.layout.slide4,
+                R.layout.slide5};
 
+        // adding bottom dots
+        addBottomDots(0);
 
-        in = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.in);
-        out = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out);
-        in1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.in1);
-        out1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out1);
+        viewPagerAdapter = new ViewPagerAdapter();
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
         //----------------------------Tab 1-------------------------------
 
@@ -116,6 +109,8 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setContent(R.id.tab2);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab2));
         host.addTab(spec);
+
+        host.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         //----------------------------Tab 2-------------------------------
 
 
@@ -293,11 +288,121 @@ public class UserAreaActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "faill", Toast.LENGTH_LONG).show();
             }
         }
-
-
-
-
     }
+
+    //----------------- prosedur dan fungsi tab 1-----------------//
+
+    public  void btnSkipClick(View v)
+    {
+        //launchHomeScreen();
+    }
+
+    public  void btnNextClick(View v)
+    {
+        // checking for last page
+        // if last page home screen will be launched
+        int current = getItem(1);
+        if (current < layouts.length) {
+            // move to next screen
+            viewPager.setCurrentItem(current);
+        } else {
+            //launchHomeScreen();
+        }
+    }
+
+
+    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+        @Override
+        public void onPageSelected(int position) {
+            addBottomDots(position);
+
+            // changing the next button text 'NEXT' / 'GOT IT'
+            if (position == layouts.length - 1) {
+                // last page. make button text to GOT IT
+                btnNext.setText("start");
+                btnSkip.setVisibility(View.GONE);
+            } else {
+                // still pages are left
+                btnNext.setText("next");
+                btnSkip.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+
+        }
+    };
+
+
+    private void addBottomDots(int currentPage) {
+        dots = new TextView[layouts.length];
+
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(this);
+            dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setTextSize(35);
+            dots[i].setTextColor(Color.parseColor("#90A4AE"));
+            dotsLayout.addView(dots[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(Color.parseColor("#232b2b"));
+    }
+
+
+    private int getItem(int i) {
+        return viewPager.getCurrentItem() + i;
+    }
+
+    private void launchHomeScreen() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
+    public class ViewPagerAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+
+
+        public ViewPagerAdapter() {
+
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View view = layoutInflater.inflate(layouts[position], container, false);
+            container.addView(view);
+
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return layouts.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view == obj;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            View view = (View) object;
+            container.removeView(view);
+        }
+    }
+    //----------------- prosedur dan fungsi tab 1-----------------//
 
 
 }
