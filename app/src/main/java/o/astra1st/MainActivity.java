@@ -2,6 +2,7 @@ package o.astra1st;
 
 
 import android.annotation.TargetApi;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -13,15 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import common.media.CameraHelper;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isRecording = false;
     private static final String TAG = "Recorder";
-    private Button captureButton;
+    private ImageButton captureButton;
+    private CircularProgressBar circularProgressBar;
     String[] separated;
 
     @Override
@@ -47,103 +50,75 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mPreview = (TextureView) findViewById(R.id.surfaceView);
-        captureButton = (Button) findViewById(R.id.go);
+        captureButton = (ImageButton) findViewById(R.id.control_interview);
         timer = (TextView) findViewById(R.id.timer);
         pertanyaan = (TextView) findViewById(R.id.pertanyaan);
+        circularProgressBar = (CircularProgressBar)findViewById(R.id.progressbar);
 
-        /*
-        //AAAAAAAAAa
-
-        // BEGIN_INCLUDE (configure_preview)
-        mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
-
-        // We need to make sure that our preview and recording video size are supported by the
-        // camera. Query camera to find all the sizes and choose the optimal size given the
-        // dimensions of our preview surface.
-        Camera.Parameters parameters = mCamera.getParameters();
-        List<Camera.Size> mSupportedPreviewSizes = parameters.getSupportedPreviewSizes();
-        List<Camera.Size> mSupportedVideoSizes = parameters.getSupportedVideoSizes();
-        Camera.Size optimalSize = CameraHelper.getOptimalVideoSize(mSupportedVideoSizes,
-                mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
-
-        // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-        profile.videoFrameWidth = optimalSize.width;
-        profile.videoFrameHeight = optimalSize.height;
-
-        // likewise for the camera object itself.
-        parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-        //parameters.setRotation(0);
-        mCamera.setParameters(parameters);
-        //mCamera.setDisplayOrientation(90);
-
-        try {
-            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
-            // with {@link SurfaceView}
-            mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
-        } catch (IOException e) {
-            Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
-        }
-        // END_INCLUDE (configure_preview)
-
-
-        // BEGIN_INCLUDE (configure_media_recorder)
-        mMediaRecorder = new MediaRecorder();
-
-        mCamera.setDisplayOrientation(90);
-        mMediaRecorder.setOrientationHint(270);
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
-        mMediaRecorder.setCamera(mCamera);
-
-
-        // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT );
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediaRecorder.setProfile(profile);
-
-        // Step 5: Prepare configured MediaRecorder
-        try {
-            mMediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            //return false;
-        } catch (IOException e) {
-            Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-           // return false;
-        }
-
-        mMediaRecorder.resume();
-
-
-
-        //AAAAAAAAAa
-        */
-
-        //download pertanyaan
-
-        /*
-        File localFile = null;
-        try {
-            localFile = File.createTempFile("pertanyaan", "txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
         Bundle bundle = getIntent().getExtras();
         separated = bundle.getStringArray("daftarPertanyaan");
 
-
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Switch();
+                Switchfor();
             }
         });
+    }
+
+    public void Switchfor()
+    {
+        if (counter_pertanyaan < separated.length)
+        {
+            //siap siap
+            pertanyaan.setText("siapsiap");
+            new CountDownTimer(4000, 1000)
+            {
+                //tampilin sisa waktu
+                public void onTick(long millisUntilFinished)
+                {
+                    timer.setText("" + millisUntilFinished / 1000);
+                }
+
+                public void onFinish()
+                {
+                    //interview
+                    pertanyaan.setText(separated[counter_pertanyaan]);
+                    counter_pertanyaan++;
+                    //mulai ngerekam
+                    onCaptureClick();
+
+                    new CountDownTimer(10000, 1000)
+                    {
+                        //tampilin sisa waktu
+                        public void onTick(long millisUntilFinished) {
+                            //int progress = 100 - round(((10000 - millisUntilFinished)/10000)*100);
+                            //circularProgressBar.setProgressWithAnimation(progress,1000);
+                            timer.setText("" + millisUntilFinished / 1000);
+                        }
+
+                        //stop jika waktu habis
+                        public void onFinish() {
+                            //stop ngerekam
+                            circularProgressBar.setProgress(0);
+                            onCaptureClick();
+                            Switchfor();
+                        }
+                    }.start();
+                    //buat progress bar
+                    circularProgressBar.setColor(Color.parseColor("#D50000"));
+                    circularProgressBar.setProgressWithAnimation(0,9900);
+
+                }
+            }.start();
+            //buat progress bar
+            circularProgressBar.setColor(Color.parseColor("#64DD17"));
+            circularProgressBar.setProgressWithAnimation(100,3900);
+        }
+        else
+        {
+            pertanyaan.setText("beres!!!");
+        }
+
     }
 
     public void Switch()
@@ -253,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setCaptureButtonText(String title) {
-        captureButton.setText(title);
+        //captureButton.setText(title);
     }
 
     @Override

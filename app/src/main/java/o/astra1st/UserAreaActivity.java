@@ -126,7 +126,7 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab3));
         host.addTab(spec);
 
-        host.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        //host.getTabWidget().getChildTabViewAt(2).setEnabled(false);
 
         start.setOnClickListener(new View.OnClickListener(){
             @Override

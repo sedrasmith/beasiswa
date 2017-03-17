@@ -14,10 +14,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/softblack"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/softblack">
+        android:layout_alignParentStart="true">
 
         <TextureView
             android:layout_width="fill_parent"
@@ -57,17 +57,48 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="20dp"
             android:elevation="1dp"
-            android:background="@drawable/roundbutton" />
+            android:background="@drawable/roundbutton"
+            android:visibility="invisible" />
 
-        <TextView
-            android:text="oi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/timer"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
+        <FrameLayout
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/round_background"
+            android:layout_width="170dp"
+            android:layout_height="54dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timer"
+                android:layout_marginLeft="15dp"
+                android:textSize="30sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="2dp"
+                android:textColor="#cfd8dc" />
+        </FrameLayout>
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            app:cpb_progress = "0"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:cpb_background_progressbar_color="#263238"
+            app:cpb_background_progressbar_width="8dp"
+            app:cpb_progressbar_color="#8BC34A"
+            app:cpb_progressbar_width="10dp"
+            android:id="@+id/progressbar"
+            android:layout_marginBottom="15dp"
+            android:layout_gravity="bottom|center_horizontal" />
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            app:srcCompat="@drawable/play"
+            android:id="@+id/control_interview"
+            android:background="@drawable/roundbutton"
             android:layout_marginBottom="20dp"
-            android:textSize="30sp" />
+            android:layout_gravity="bottom|center_horizontal"
+            android:paddingLeft="8dp" />
 
     </FrameLayout>
 </RelativeLayout>
