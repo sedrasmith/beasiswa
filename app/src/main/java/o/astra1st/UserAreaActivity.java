@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
+    TabHost host;
     //-------- var tab 1 ------------//
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
@@ -65,14 +66,14 @@ public class UserAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_area);
 
+
+
+
         getSupportActionBar().setElevation(0);
 
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
+        host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
         host.getTabWidget().setDividerDrawable(null);
-
-
-
 
         //----------------------------Tab 1-------------------------------
 
@@ -85,6 +86,7 @@ public class UserAreaActivity extends AppCompatActivity {
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         btnSkip = (Button) findViewById(R.id.btn_skip);
         btnNext = (Button) findViewById(R.id.btn_next);
+
 
         layouts = new int[]{
                 R.layout.slide1,
@@ -99,6 +101,7 @@ public class UserAreaActivity extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter();
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+
 
         //----------------------------Tab 1-------------------------------
 
@@ -122,6 +125,8 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setContent(R.id.tab3);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab3));
         host.addTab(spec);
+
+        host.getTabWidget().getChildTabViewAt(2).setEnabled(false);
 
         start.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -184,10 +189,7 @@ public class UserAreaActivity extends AppCompatActivity {
                     }
                 });
 
-
-
             }
-
         });
 
 
@@ -206,6 +208,8 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setContent(R.id.tab4);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab4));
         host.addTab(spec);
+
+        host.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
@@ -377,10 +381,30 @@ public class UserAreaActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
+            switch (position) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                Button verifikasi1 = (Button) findViewById(R.id.verifikasi1);
+                    verifikasi1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
+                            host.setCurrentTab(1);
+                        }
+                    });
+                    break;
+            }
 
             return view;
         }

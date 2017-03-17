@@ -36,9 +36,9 @@
 
         <Button
             android:text="ya"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:id="@+id/verifikasi1"
             android:layout_marginTop="20dp"
             android:color="#232b2b"
             android:textColor="#cfd8dc"
