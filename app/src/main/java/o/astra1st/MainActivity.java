@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isInterview = true;
     private boolean isInterviewdone = false;
     private int counter_pertanyaan = 0;
-
+    private CountDownTimer cdt_persiapan ,cdt_record;
     private boolean isRecording = false;
     private static final String TAG = "Recorder";
     private ImageButton captureButton;
@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         {
             //siap siap
             pertanyaan.setText("siapsiap");
-            new CountDownTimer(4000, 1000)
+
+            cdt_persiapan = new CountDownTimer(4000, 1000)
             {
                 //tampilin sisa waktu
                 public void onTick(long millisUntilFinished)
@@ -81,18 +82,22 @@ public class MainActivity extends AppCompatActivity {
 
                 public void onFinish()
                 {
+                    //enable button stop
+                    //captureButton.setEnabled(true);
                     //interview
                     pertanyaan.setText(separated[counter_pertanyaan]);
                     counter_pertanyaan++;
                     //mulai ngerekam
-                    onCaptureClick();
+                    if (isRecording == false)
+                    {
+                        onCaptureClick();
+                    }
 
-                    new CountDownTimer(10000, 1000)
+
+                    cdt_record = new CountDownTimer(10000, 1000)
                     {
                         //tampilin sisa waktu
                         public void onTick(long millisUntilFinished) {
-                            //int progress = 100 - round(((10000 - millisUntilFinished)/10000)*100);
-                            //circularProgressBar.setProgressWithAnimation(progress,1000);
                             timer.setText("" + millisUntilFinished / 1000);
                         }
 
@@ -100,8 +105,12 @@ public class MainActivity extends AppCompatActivity {
                         public void onFinish() {
                             //stop ngerekam
                             circularProgressBar.setProgress(0);
-                            onCaptureClick();
+                            if (isRecording == true)
+                            {
+                                onCaptureClick();
+                            }
                             Switchfor();
+
                         }
                     }.start();
                     //buat progress bar
@@ -110,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }.start();
+            captureButton.setEnabled(false);
             //buat progress bar
             circularProgressBar.setColor(Color.parseColor("#64DD17"));
             circularProgressBar.setProgressWithAnimation(100,3900);
@@ -120,72 +130,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    public void Switch()
-    {
-        if (counter_pertanyaan < separated.length)
-        {
-            if (isInterview)
-            {
-                //-------tahap siap siap--------
-                new CountDownTimer(4000, 1000)
-                {
-
-                    //tampilin sisa waktu
-                    public void onTick(long millisUntilFinished) {
-                        timer.setText("" + millisUntilFinished / 1000);
-                    }
-
-                    //stop jika waktu habis
-                    public void onFinish() {
-                        isInterview = false;
-                        Switch();
-                    }
-                }.start();
-
-            }
-            else
-            {
-                //-------mulai interview--------
-
-                pertanyaan.setText(separated[counter_pertanyaan]);
-                //mulai ngerekam
-                onCaptureClick();
-
-                //mulai countdown
-                new CountDownTimer(10000, 1000)
-                {
-                    //tampilin sisa waktu
-                    public void onTick(long millisUntilFinished) {
-                        timer.setText("" + millisUntilFinished / 1000);
-                    }
-
-                    //stop jika waktu habis
-                    public void onFinish() {
-                        timer.setText("done!");
-                        //stop ngerekam
-                        onCaptureClick();
-                        counter_pertanyaan++;
-                        isInterview = true;
-                        pertanyaan.setText("siapsiap");
-                        Switch();
-                    }
-                }.start();
-
-            }
-        }
-        else
-        {
-            pertanyaan.setText("beres!!!");
-        }
-
-    }
-
-
-
-
-
-
     /**
      * The capture button controls all user interaction. When recording, the button click
      * stops recording, releases {@link android.media.MediaRecorder} and {@link android.hardware.Camera}. When not recording,
@@ -196,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCaptureClick() {
         if (isRecording) {
             // BEGIN_INCLUDE(stop_release_media_recorder)
+
 
             // stop recording and release camera
             try {
@@ -213,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             // inform the user that recording has stopped
             setCaptureButtonText("Start");
             isRecording = false;
+
             //releaseCamera();
             // END_INCLUDE(stop_release_media_recorder)
 

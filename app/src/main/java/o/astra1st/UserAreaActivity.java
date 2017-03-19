@@ -1,6 +1,5 @@
 package o.astra1st;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,6 +22,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dd.CircularProgressButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -49,16 +49,30 @@ public class UserAreaActivity extends AppCompatActivity {
     private Button btnSkip, btnNext;
     //-------- var tab 1 ------------//
 
+    //-------- var tab 2 ------------//
+    private ViewPager viewPager2;
+    private ViewPagerAdapter viewPagerAdapter2;
+    private LinearLayout dotsLayout2;
+    private TextView[] dots2;
+    private int[] layouts2;
+    private Button btnSkip2, btnNext2;
+    //-------- var tab 2 ------------//
+
+
+
+
     //-------- var tab 4 ------------//
     private static final int PICK_IMAGE_REQUEST = 234;
     //Buttons
-    private Button buttonUpload;
+    private CircularProgressButton buttonUpload;
     //ImageView
     private ImageView imageView;
     //a Uri object to store file path
     private Uri filePath;
     //firebase storage reference
     private StorageReference storageReference;
+    //progress upload
+    int jumlahfile=0,counterupload,flag=1;
     //-------- var tab 4 ------------//
 
     @Override
@@ -75,6 +89,29 @@ public class UserAreaActivity extends AppCompatActivity {
         host.setup();
         host.getTabWidget().setDividerDrawable(null);
 
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
+            @Override
+            public void onTabChanged(String tabId) {
+                if("Petunjuk".equals(tabId)) {
+
+                    layouts = new int[]{
+                            R.layout.slide1,
+                            R.layout.slide2,
+                            R.layout.slide3,
+                            R.layout.slide4,
+                            R.layout.slide5};
+                }
+
+                else if("Tab Two".equals(tabId)) {
+
+                    layouts[0] = R.layout.slide6;
+                    layouts[1] = R.layout.slide7;
+                    layouts[2] = R.layout.slide8;
+
+                }
+
+            }});
+
         //----------------------------Tab 1-------------------------------
 
         TabHost.TabSpec spec = host.newTabSpec("Petunjuk");
@@ -87,13 +124,6 @@ public class UserAreaActivity extends AppCompatActivity {
         btnSkip = (Button) findViewById(R.id.btn_skip);
         btnNext = (Button) findViewById(R.id.btn_next);
 
-
-        layouts = new int[]{
-                R.layout.slide1,
-                R.layout.slide2,
-                R.layout.slide3,
-                R.layout.slide4,
-                R.layout.slide5};
 
         // adding bottom dots
         addBottomDots(0);
@@ -112,6 +142,22 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setContent(R.id.tab2);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab2));
         host.addTab(spec);
+
+        viewPager2 = (ViewPager) findViewById(R.id.view_pager2);
+        dotsLayout2 = (LinearLayout) findViewById(R.id.layoutDots2);
+        btnSkip2 = (Button) findViewById(R.id.btn_skip2);
+        btnNext2 = (Button) findViewById(R.id.btn_next2);
+
+        layouts2 = new int[]{
+                R.layout.slide6,
+                R.layout.slide7,
+                R.layout.slide8};
+
+        addBottomDots2(0);
+
+        viewPagerAdapter2 = new ViewPagerAdapter();
+        viewPager2.setAdapter(viewPagerAdapter2);
+        viewPager2.addOnPageChangeListener(viewPagerPageChangeListener);
 
         host.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         //----------------------------Tab 2-------------------------------
@@ -200,8 +246,8 @@ public class UserAreaActivity extends AppCompatActivity {
         File[] dir;
         TextView keterangan;
         ///debug
-        buttonUpload = (Button) findViewById(R.id.upload);
-        keterangan = (TextView) findViewById(R.id.keteranganfile);
+        buttonUpload = (CircularProgressButton) findViewById(R.id.upload_fancy);
+
         storageReference = FirebaseStorage.getInstance().getReference();
 
         spec = host.newTabSpec("Tab Four");
@@ -209,7 +255,7 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab4));
         host.addTab(spec);
 
-        host.getTabWidget().getChildTabViewAt(3).setEnabled(false);
+        host.getTabWidget().getChildTabViewAt(3).setEnabled(true);
 
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
@@ -217,12 +263,14 @@ public class UserAreaActivity extends AppCompatActivity {
 
         dir = file.listFiles();
 
-        keterangan.setText("jumlah file = " + dir.length);
+
 
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                buttonUpload.setClickable(false);
                 uploadFile();
+
             }
         });
 
@@ -234,23 +282,25 @@ public class UserAreaActivity extends AppCompatActivity {
 
     private void uploadFile() {
         //if there is a file to upload
+
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
         //+ File.separator + "VID_"+ "1" + ".mp4");
 
         File[] direktori = file.listFiles();
+        jumlahfile = direktori.length;
 
         for (int u = 0; u < direktori.length; u++)
         {
+            counterupload = u + 1;
+
             Intent data = new Intent();
             data.setData(Uri.fromFile(direktori[u]));
             filePath = data.getData();
 
             if (filePath != null) {
                 //displaying a progress dialog while upload is going on
-                final ProgressDialog progressDialog = new ProgressDialog(this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
+                //tambah counter upload
 
                 StorageReference riversRef = storageReference.child("images/VID_" + u + ".mp4");
                 riversRef.putFile(filePath)
@@ -259,10 +309,11 @@ public class UserAreaActivity extends AppCompatActivity {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 //if the upload is successfull
                                 //hiding the progress dialog
-                                progressDialog.dismiss();
+
+                                buttonUpload.setClickable(true);
 
                                 //and displaying a success toast
-                                Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -270,7 +321,7 @@ public class UserAreaActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Exception exception) {
                                 //if the upload is not successfull
                                 //hiding the progress dialog
-                                progressDialog.dismiss();
+                                buttonUpload.setClickable(true);
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -281,17 +332,32 @@ public class UserAreaActivity extends AppCompatActivity {
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                                 //calculating progress percentage
                                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                int progress_int = (int)progress*counterupload/jumlahfile;
+
+                                if(progress_int != 0)
+                                {
+                                    buttonUpload.setProgress(progress_int);
+                                }
+                                else
+                                {
+                                    buttonUpload.setProgress(1);
+                                }
+
 
                                 //displaying percentage in progress dialog
-                                progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+
                             }
                         });
+                buttonUpload.setProgress(50);
             }
-            //if there is not any file
             else {
                 Toast.makeText(getApplicationContext(), "faill", Toast.LENGTH_LONG).show();
+                buttonUpload.setProgress(-1);
+                buttonUpload.setClickable(true);
             }
         }
+
+
     }
 
     //----------------- prosedur dan fungsi tab 1-----------------//
@@ -361,14 +427,25 @@ public class UserAreaActivity extends AppCompatActivity {
             dots[currentPage].setTextColor(Color.parseColor("#232b2b"));
     }
 
+    private void addBottomDots2(int currentPage) {
+        dots2 = new TextView[layouts2.length];
+
+        dotsLayout2.removeAllViews();
+        for (int i = 0; i < dots2.length; i++) {
+            dots2[i] = new TextView(this);
+            dots2[i].setText(Html.fromHtml("&#8226;"));
+            dots2[i].setTextSize(35);
+            dots2[i].setTextColor(Color.parseColor("#90A4AE"));
+            dotsLayout2.addView(dots2[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(Color.parseColor("#232b2b"));
+    }
+
 
     private int getItem(int i) {
         return viewPager.getCurrentItem() + i;
-    }
-
-    private void launchHomeScreen() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
     }
 
     public class ViewPagerAdapter extends PagerAdapter {

@@ -11,17 +11,18 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
-            android:src="@drawable/countdown"
+            android:src="@drawable/coffee_cup"
             android:layout_width="170dp"
             android:layout_height="170dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tahap"
+            android:text="Persiapan"
             android:textColor="@color/softblack"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -31,9 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:text="Terdapat dua tahap setiap satu pertanyaan pada proses online interview yaitu persiapan dan rekaman "
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:text="Pergunakan tahap ini untuk merapihkan penampilan, memposisikan kamera dengan baik dan membaca pertanyaan. Setelah durasi yang diberikan habis maka secara otomatis masuk pada tahap rekaman."
             android:textAlignment="center"
             android:textColor="@color/softblack"
             android:textSize="14sp" />
