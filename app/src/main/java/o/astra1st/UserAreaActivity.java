@@ -93,12 +93,12 @@ public class UserAreaActivity extends AppCompatActivity {
             @Override
             public void onTabChanged(String tabId) {
                 if("Petunjuk".equals(tabId)) {
-
                     layouts = new int[]{
                             R.layout.slide1,
                             R.layout.slide2,
                             R.layout.slide3,
                             R.layout.slide4,
+                            R.layout.slide9,
                             R.layout.slide5};
                 }
 
@@ -107,7 +107,8 @@ public class UserAreaActivity extends AppCompatActivity {
                     layouts[0] = R.layout.slide6;
                     layouts[1] = R.layout.slide7;
                     layouts[2] = R.layout.slide8;
-
+                    layouts[3] = R.layout.slide10;
+                    layouts[4] = R.layout.slide11;
                 }
 
             }});
@@ -356,16 +357,9 @@ public class UserAreaActivity extends AppCompatActivity {
                 buttonUpload.setClickable(true);
             }
         }
-
-
     }
 
     //----------------- prosedur dan fungsi tab 1-----------------//
-
-    public  void btnSkipClick(View v)
-    {
-        //launchHomeScreen();
-    }
 
     public  void btnNextClick(View v)
     {
@@ -388,7 +382,7 @@ public class UserAreaActivity extends AppCompatActivity {
             addBottomDots(position);
 
             // changing the next button text 'NEXT' / 'GOT IT'
-            if (position == layouts.length - 1) {
+            if (position == layouts.length) {
                 // last page. make button text to GOT IT
                 btnNext.setText("start");
                 btnSkip.setVisibility(View.GONE);
@@ -439,8 +433,8 @@ public class UserAreaActivity extends AppCompatActivity {
             dotsLayout2.addView(dots2[i]);
         }
 
-        if (dots.length > 0)
-            dots[currentPage].setTextColor(Color.parseColor("#232b2b"));
+        if (dots2.length > 0)
+            dots2[currentPage].setTextColor(Color.parseColor("#232b2b"));
     }
 
 
@@ -471,7 +465,7 @@ public class UserAreaActivity extends AppCompatActivity {
                     break;
                 case 3:
                     break;
-                case 4:
+                case 5:
                 Button verifikasi1 = (Button) findViewById(R.id.verifikasi1);
                     verifikasi1.setOnClickListener(new View.OnClickListener() {
                         @Override

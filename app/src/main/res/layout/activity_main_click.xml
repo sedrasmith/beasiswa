@@ -112,7 +112,7 @@
                                 android:textStyle="normal|bold" />
 
                             <TextView
-                                android:text="menit"
+                                android:text="Menit"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
                                 android:id="@+id/textView9"
@@ -153,14 +153,6 @@
 
         </FrameLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-
-        </LinearLayout>
-
         <Button
             android:text="start"
             android:layout_width="300dp"
@@ -168,7 +160,8 @@
             android:id="@+id/start"
             android:layout_gravity="center"
             android:textColor="@color/putih"
-            android:background="@color/softblack" />
+            android:background="@color/softblack"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </RelativeLayout>
