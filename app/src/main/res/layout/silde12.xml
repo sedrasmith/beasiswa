@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECEFF1">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peryataan"
+            android:textColor="@color/softblack"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:text="dengan menekan tombol ini saya menyatakan telah membaca dan memahami semua pentunjuk penggunaan aplikasi online inteview tersebut"
+            android:textAlignment="center"
+            android:textColor="@color/softblack"
+            android:textSize="14sp" />
+
+        <Button
+            android:text="ya"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:id="@+id/verifikasi2"
+            android:layout_marginTop="20dp"
+            android:color="#232b2b"
+            android:textColor="#cfd8dc"
+            android:background="#232b2b"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
+

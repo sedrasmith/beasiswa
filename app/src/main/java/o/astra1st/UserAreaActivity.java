@@ -109,6 +109,7 @@ public class UserAreaActivity extends AppCompatActivity {
                     layouts[2] = R.layout.slide8;
                     layouts[3] = R.layout.slide10;
                     layouts[4] = R.layout.slide11;
+                    layouts[5] = R.layout.silde12;
                 }
 
             }});
@@ -466,14 +467,29 @@ public class UserAreaActivity extends AppCompatActivity {
                 case 3:
                     break;
                 case 5:
-                Button verifikasi1 = (Button) findViewById(R.id.verifikasi1);
-                    verifikasi1.setOnClickListener(new View.OnClickListener() {
+                    if (layouts[5] == R.layout.slide5)
+                    {
+                        Button verifikasi1 = (Button) findViewById(R.id.verifikasi1);
+                        verifikasi1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
-                            host.setCurrentTab(1);
-                        }
+                                host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
+                                host.setCurrentTab(1);
+                            }
                     });
+                    }
+
+                    if (layouts[5] == R.layout.silde12) {
+                        Button verifikasi2 = (Button) findViewById(R.id.verifikasi2);
+                        verifikasi2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                host.getTabWidget().getChildTabViewAt(2).setEnabled(true);
+                                host.setCurrentTab(2);
+                            }
+                        });
+                    }
+
                     break;
             }
 
