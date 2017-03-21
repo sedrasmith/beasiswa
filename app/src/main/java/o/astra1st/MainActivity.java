@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         mCamera.setParameters(parameters);
         //mCamera.setDisplayOrientation(90);
 
-        /*
+
         try {
             // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
             // with {@link SurfaceView}
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
             return false;
         }
-        */
+
         // END_INCLUDE (configure_preview)
 
 

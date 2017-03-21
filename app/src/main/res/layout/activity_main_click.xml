@@ -154,7 +154,7 @@
         </FrameLayout>
 
         <Button
-            android:text="start"
+            android:text="start interview"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/start"

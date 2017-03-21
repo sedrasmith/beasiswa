@@ -40,13 +40,17 @@ import java.io.InputStreamReader;
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
     TabHost host;
+
+    boolean istab1 = false, istutor1_done = false, istutor2_done = false, isinterview_done = false;
+
+
     //-------- var tab 1 ------------//
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
-    private Button btnSkip, btnNext;
+    private Button btnSkip, btnNext, verifikasi1;
     //-------- var tab 1 ------------//
 
     //-------- var tab 2 ------------//
@@ -55,7 +59,7 @@ public class UserAreaActivity extends AppCompatActivity {
     private LinearLayout dotsLayout2;
     private TextView[] dots2;
     private int[] layouts2;
-    private Button btnSkip2, btnNext2;
+    private Button btnSkip2, btnNext2, verifikasi2;
     //-------- var tab 2 ------------//
 
 
@@ -89,10 +93,13 @@ public class UserAreaActivity extends AppCompatActivity {
         host.setup();
         host.getTabWidget().setDividerDrawable(null);
 
+
+
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
             @Override
             public void onTabChanged(String tabId) {
-                if("Petunjuk".equals(tabId)) {
+                if("Petunjuk".equals(tabId))
+                {
                     layouts = new int[]{
                             R.layout.slide1,
                             R.layout.slide2,
@@ -100,19 +107,36 @@ public class UserAreaActivity extends AppCompatActivity {
                             R.layout.slide4,
                             R.layout.slide9,
                             R.layout.slide5};
+                    istab1 = true;
+                    setTitle("Persiapan");
                 }
 
-                else if("Tab Two".equals(tabId)) {
-
+                else if("Tab Two".equals(tabId))
+                {
                     layouts[0] = R.layout.slide6;
                     layouts[1] = R.layout.slide7;
                     layouts[2] = R.layout.slide8;
                     layouts[3] = R.layout.slide10;
                     layouts[4] = R.layout.slide11;
                     layouts[5] = R.layout.silde12;
+                    istab1 = false;
+                    setTitle("Petunjuk Penggunaan");
+                }
+
+                else if("Tab Three".equals(tabId))
+                {
+                    setTitle("Interview");
+                }
+
+                else if("Tab Four".equals(tabId))
+                {
+                    setTitle("Upload");
                 }
 
             }});
+
+
+
 
         //----------------------------Tab 1-------------------------------
 
@@ -139,6 +163,7 @@ public class UserAreaActivity extends AppCompatActivity {
 
 
 
+
         //----------------------------Tab 2-------------------------------
         spec = host.newTabSpec("Tab Two");
         spec.setContent(R.id.tab2);
@@ -150,10 +175,28 @@ public class UserAreaActivity extends AppCompatActivity {
         btnSkip2 = (Button) findViewById(R.id.btn_skip2);
         btnNext2 = (Button) findViewById(R.id.btn_next2);
 
+        host.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!istutor1_done)
+                {
+                    Toast.makeText(getApplicationContext(),"selesaikan persiapan terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    host.setCurrentTab(0);
+                }
+                else
+                {
+                    host.setCurrentTab(1);
+                }
+            }
+        });
+
         layouts2 = new int[]{
                 R.layout.slide6,
                 R.layout.slide7,
-                R.layout.slide8};
+                R.layout.slide8,
+                R.layout.slide10,
+                R.layout.slide11,
+                R.layout.silde12};
 
         addBottomDots2(0);
 
@@ -161,7 +204,8 @@ public class UserAreaActivity extends AppCompatActivity {
         viewPager2.setAdapter(viewPagerAdapter2);
         viewPager2.addOnPageChangeListener(viewPagerPageChangeListener);
 
-        host.getTabWidget().getChildTabViewAt(1).setEnabled(false);
+
+        //host.getTabWidget().getChildTabViewAt(1).setEnabled(false);
         //----------------------------Tab 2-------------------------------
 
 
@@ -174,12 +218,33 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab3));
         host.addTab(spec);
 
+        host.getTabWidget().getChildAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!istutor2_done && !istutor1_done)
+                {
+                    Toast.makeText(getApplicationContext(),"selesaikan persiapan & petunjuk penggunaan terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    host.setCurrentTab(0);
+                }
+                else  if(!istutor2_done && istutor1_done)
+                {
+                    Toast.makeText(getApplicationContext(),"selesaikan petunjuk penggunaan terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    host.setCurrentTab(1);
+                }
+                else
+                {
+                    host.setCurrentTab(2);
+                }
+            }
+        });
+
         //host.getTabWidget().getChildTabViewAt(2).setEnabled(false);
 
         start.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 //download pertanyaan
+                start.setClickable(false);
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                 StorageReference islandRef;
 
@@ -210,7 +275,11 @@ public class UserAreaActivity extends AppCompatActivity {
                             myReader.close();
                             final String[] separated = aBuffer.split(",");
                             int length = separated.length;
-                            Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_SHORT).show();
+
+
+                            start.setBackgroundColor(Color.parseColor("#8BC34A"));
+
 
                             new CountDownTimer(1000, 1000)
                             {
@@ -233,7 +302,8 @@ public class UserAreaActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
+                        start.setClickable(true);
+                        Toast.makeText(getApplicationContext(),"fail to sync", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -247,7 +317,7 @@ public class UserAreaActivity extends AppCompatActivity {
 
         File[] dir;
         TextView keterangan;
-        ///debug
+
         buttonUpload = (CircularProgressButton) findViewById(R.id.upload_fancy);
 
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -257,15 +327,13 @@ public class UserAreaActivity extends AppCompatActivity {
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab4));
         host.addTab(spec);
 
-        host.getTabWidget().getChildTabViewAt(3).setEnabled(true);
+        //host.getTabWidget().getChildTabViewAt(3).setEnabled(false);
 
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
         //+ File.separator + "VID_"+ "1" + ".mp4");
 
         dir = file.listFiles();
-
-
 
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
@@ -278,6 +346,8 @@ public class UserAreaActivity extends AppCompatActivity {
 
 
         //----------------------------Tab 4-------------------------------
+
+
     }
 
 
@@ -312,7 +382,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                 //if the upload is successfull
                                 //hiding the progress dialog
 
-                                buttonUpload.setClickable(true);
+                                buttonUpload.setClickable(false);
 
                                 //and displaying a success toast
                                 Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
@@ -380,7 +450,17 @@ public class UserAreaActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            addBottomDots(position);
+            if (istab1)
+            {
+                addBottomDots(position);
+            }
+            else
+            {
+                addBottomDots2(position);
+            }
+
+
+
 
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position == layouts.length) {
@@ -457,6 +537,7 @@ public class UserAreaActivity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
+
             switch (position) {
                 case 0:
                     break;
@@ -469,21 +550,30 @@ public class UserAreaActivity extends AppCompatActivity {
                 case 5:
                     if (layouts[5] == R.layout.slide5)
                     {
-                        Button verifikasi1 = (Button) findViewById(R.id.verifikasi1);
+                        verifikasi1 = (Button) findViewById(R.id.verifikasi1);
                         verifikasi1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                verifikasi1.setClickable(false);
+                                verifikasi1.setBackgroundColor(Color.parseColor("#8BC34A"));
+                                istutor1_done = true;
                                 host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
                                 host.setCurrentTab(1);
                             }
-                    });
+                        });
                     }
 
-                    if (layouts[5] == R.layout.silde12) {
-                        Button verifikasi2 = (Button) findViewById(R.id.verifikasi2);
+                    if (layouts[5] == R.layout.silde12)
+                    {
+                        verifikasi2 = (Button) findViewById(R.id.verifikasi2);
                         verifikasi2.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) {
+                            public void onClick(View v)
+                            {
+                                verifikasi2.setClickable(false);
+                                verifikasi2.setBackgroundColor(Color.parseColor("#8BC34A"));
+                                istutor2_done = true;
                                 host.getTabWidget().getChildTabViewAt(2).setEnabled(true);
                                 host.setCurrentTab(2);
                             }
