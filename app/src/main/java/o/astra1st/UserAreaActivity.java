@@ -1,5 +1,6 @@
 package o.astra1st;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +26,11 @@ import android.widget.Toast;
 import com.dd.CircularProgressButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -42,6 +48,17 @@ public class UserAreaActivity extends AppCompatActivity {
     TabHost host;
 
     boolean istab1 = false, istutor1_done = false, istutor2_done = false, isinterview_done = false;
+
+
+
+    //-------- firebase ------------//
+
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    username user;
+    String id;
+
+    //-------- firebase ------------//
 
 
     //-------- var tab 1 ------------//
@@ -84,16 +101,15 @@ public class UserAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_area);
 
-
-
+        final ProgressDialog prog_dial = new ProgressDialog(this);
+        prog_dial.setCanceledOnTouchOutside(false);
+        prog_dial.show();
 
         getSupportActionBar().setElevation(0);
 
         host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
         host.getTabWidget().setDividerDrawable(null);
-
-
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
             @Override
@@ -178,7 +194,7 @@ public class UserAreaActivity extends AppCompatActivity {
         host.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!istutor1_done)
+                if(!user.persiapan)
                 {
                     Toast.makeText(getApplicationContext(),"selesaikan persiapan terlebih dahulu", Toast.LENGTH_SHORT).show();
                     host.setCurrentTab(0);
@@ -213,6 +229,12 @@ public class UserAreaActivity extends AppCompatActivity {
 
         final Button start = (Button) findViewById(R.id.start);
 
+        if (isinterview_done)
+        {
+            start.setClickable(false);
+            start.setBackgroundColor(Color.parseColor("#8BC34A"));
+        }
+
         spec = host.newTabSpec("Tab Three");
         spec.setContent(R.id.tab3);
         spec.setIndicator("",  getResources().getDrawable(R.drawable.tab3));
@@ -221,12 +243,12 @@ public class UserAreaActivity extends AppCompatActivity {
         host.getTabWidget().getChildAt(2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!istutor2_done && !istutor1_done)
+                if(!user.persiapan && !user.petunjuk_penggunaan)
                 {
                     Toast.makeText(getApplicationContext(),"selesaikan persiapan & petunjuk penggunaan terlebih dahulu", Toast.LENGTH_SHORT).show();
                     host.setCurrentTab(0);
                 }
-                else  if(!istutor2_done && istutor1_done)
+                else  if(!user.petunjuk_penggunaan && user.persiapan)
                 {
                     Toast.makeText(getApplicationContext(),"selesaikan petunjuk penggunaan terlebih dahulu", Toast.LENGTH_SHORT).show();
                     host.setCurrentTab(1);
@@ -273,7 +295,8 @@ public class UserAreaActivity extends AppCompatActivity {
                                 aBuffer += aDataRow;
                             }
                             myReader.close();
-                            final String[] separated = aBuffer.split(",");
+
+                            final String[] separated = user.pertanyaan.split(",");
                             int length = separated.length;
                             Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_SHORT).show();
 
@@ -288,6 +311,9 @@ public class UserAreaActivity extends AppCompatActivity {
                                 //delay 1 detik terus ganti halaman
                                 public void onFinish()
                                 {
+                                    user.interview = true;
+                                    myRef.child("user").child(id).child("interview").setValue(true);
+
                                     Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
                                     intent.putExtra("daftarPertanyaan", separated);
                                     UserAreaActivity.this.startActivity(intent);
@@ -346,6 +372,45 @@ public class UserAreaActivity extends AppCompatActivity {
 
 
         //----------------------------Tab 4-------------------------------
+
+        //----------------------------FIREBASE-------------------------------
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+
+        Bundle bundle = getIntent().getExtras();
+        id = bundle.getString("id");
+
+
+        // Read from the database
+        myRef.child("user").child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                user = dataSnapshot.getValue(username.class);
+                isinterview_done = user.interview;
+
+                if (isinterview_done)
+                {
+                    start.setClickable(false);
+                    start.setBackgroundColor(Color.parseColor("#8BC34A"));
+                    start.setText("interview done");
+                }
+                Toast.makeText(getApplicationContext(),"sync done", Toast.LENGTH_SHORT).show();
+                prog_dial.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(getApplicationContext(),"tidak dapat sync", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+
+        //----------------------------FIREBASE-------------------------------
 
 
     }
@@ -551,33 +616,57 @@ public class UserAreaActivity extends AppCompatActivity {
                     if (layouts[5] == R.layout.slide5)
                     {
                         verifikasi1 = (Button) findViewById(R.id.verifikasi1);
-                        verifikasi1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                verifikasi1.setClickable(false);
-                                verifikasi1.setBackgroundColor(Color.parseColor("#8BC34A"));
-                                istutor1_done = true;
-                                host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
-                                host.setCurrentTab(1);
-                            }
-                        });
+                        if (user.persiapan)
+                        {
+                            verifikasi1.setClickable(false);
+                            verifikasi1.setBackgroundColor(Color.parseColor("#8BC34A"));
+                        }
+                        else
+                        {
+                            verifikasi1.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    verifikasi1.setClickable(false);
+                                    verifikasi1.setBackgroundColor(Color.parseColor("#8BC34A"));
+                                    istutor1_done = true;
+                                    user.persiapan =true;
+                                    myRef.child("user").child(id).child("persiapan").setValue(true);
+                                    host.getTabWidget().getChildTabViewAt(1).setEnabled(true);
+                                    host.setCurrentTab(1);
+                                }
+                            });
+                        }
                     }
 
                     if (layouts[5] == R.layout.silde12)
                     {
+
                         verifikasi2 = (Button) findViewById(R.id.verifikasi2);
-                        verifikasi2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                verifikasi2.setClickable(false);
-                                verifikasi2.setBackgroundColor(Color.parseColor("#8BC34A"));
-                                istutor2_done = true;
-                                host.getTabWidget().getChildTabViewAt(2).setEnabled(true);
-                                host.setCurrentTab(2);
-                            }
-                        });
+                        if (user.petunjuk_penggunaan)
+                        {
+                            verifikasi2.setClickable(false);
+                            verifikasi2.setBackgroundColor(Color.parseColor("#8BC34A"));
+                        }
+                        else
+                        {
+
+                            verifikasi2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    verifikasi2.setClickable(false);
+                                    verifikasi2.setBackgroundColor(Color.parseColor("#8BC34A"));
+                                    istutor2_done = true;
+                                    user.petunjuk_penggunaan =true;
+                                    myRef.child("user").child(id).child("petunjuk_penggunaan").setValue(true);
+                                    host.getTabWidget().getChildTabViewAt(2).setEnabled(true);
+                                    host.setCurrentTab(2);
+                                }
+                            });
+                        }
+
+
                     }
 
                     break;
@@ -602,6 +691,17 @@ public class UserAreaActivity extends AppCompatActivity {
             View view = (View) object;
             container.removeView(view);
         }
+    }
+
+    public static class username {
+        boolean login;
+        boolean persiapan = false;
+        boolean petunjuk_penggunaan = false;
+        boolean interview = false;
+        boolean uploaded = false;
+        String pertanyaan;
+
+        public username(){}
     }
     //----------------- prosedur dan fungsi tab 1-----------------//
 
