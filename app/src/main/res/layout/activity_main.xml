@@ -8,6 +8,7 @@
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
+    android:keepScreenOn="true"
     android:paddingTop="0dp"
     tools:context="o.astra1st.MainActivity"
     android:background="@color/putih">
@@ -72,12 +73,11 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:id="@+id/timer"
-                android:layout_marginLeft="15dp"
-                android:textSize="30sp"
+                android:layout_marginLeft="10dp"
+                android:textSize="24sp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="2dp"
                 android:textColor="#cfd8dc"
-                android:layout_width="31dp"
+                android:layout_width="41dp"
                 android:gravity="center_horizontal" />
         </FrameLayout>
 

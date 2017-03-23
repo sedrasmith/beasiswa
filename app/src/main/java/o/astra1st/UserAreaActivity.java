@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
+import com.github.ybq.android.spinkit.style.CubeGrid;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -41,13 +43,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 
 public class UserAreaActivity extends AppCompatActivity {
     TabHost tabHost;
     TabHost host;
 
-    boolean istab1 = false, istutor1_done = false, istutor2_done = false, isinterview_done = false;
+    boolean istab1 = false, istutor1_done = false, istutor2_done = false, isinterview_done = false, load_awal = false;
+    ProgressDialog prog_dial;
 
 
 
@@ -101,9 +105,20 @@ public class UserAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_area);
 
-        final ProgressDialog prog_dial = new ProgressDialog(this);
-        prog_dial.setCanceledOnTouchOutside(false);
-        prog_dial.show();
+        if (!load_awal)
+        {
+            prog_dial = new ProgressDialog(this);
+            prog_dial.setProgressStyle(R.style.SpinKitView_FoldingCube);
+            CubeGrid doubleBounce = new CubeGrid();
+            doubleBounce.setColor(Color.parseColor("#232b2b"));
+            prog_dial.setIndeterminateDrawable(doubleBounce);
+            prog_dial.setCanceledOnTouchOutside(false);
+            prog_dial.setMessage("sync");
+
+            //prog_dial.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            //prog_dial.getWindow().setGravity(Gravity.CENTER_HORIZONTAL);
+            prog_dial.show();
+        }
 
         getSupportActionBar().setElevation(0);
 
@@ -297,6 +312,16 @@ public class UserAreaActivity extends AppCompatActivity {
                             myReader.close();
 
                             final String[] separated = user.pertanyaan.split(",");
+                            final ArrayList<Integer> durasipertanyaan = new ArrayList<Integer>();
+                            final String[] durasi = user.durasi.split(",");
+
+                            for(int i = 0; i < durasi.length; i++)
+                            {
+                                durasipertanyaan.add(i, Integer.parseInt(durasi[i]));
+                            }
+
+
+
                             int length = separated.length;
                             Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_SHORT).show();
 
@@ -316,6 +341,7 @@ public class UserAreaActivity extends AppCompatActivity {
 
                                     Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
                                     intent.putExtra("daftarPertanyaan", separated);
+                                    intent.putExtra("durasiPertanyaan", durasipertanyaan);
                                     UserAreaActivity.this.startActivity(intent);
                                 }
                             }.start();
@@ -388,17 +414,27 @@ public class UserAreaActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 user = dataSnapshot.getValue(username.class);
-                isinterview_done = user.interview;
 
-                if (isinterview_done)
+                if(!load_awal)
                 {
-                    start.setClickable(false);
-                    start.setBackgroundColor(Color.parseColor("#8BC34A"));
-                    start.setText("interview done");
-                }
-                Toast.makeText(getApplicationContext(),"sync done", Toast.LENGTH_SHORT).show();
-                prog_dial.dismiss();
+                    isinterview_done = user.interview;
+                    if (isinterview_done)
+                    {
+                        start.setClickable(false);
+                        start.setBackgroundColor(Color.parseColor("#8BC34A"));
+                        start.setText("interview done");
+                    }
+                    Toast.makeText(getApplicationContext(),"sync done", Toast.LENGTH_SHORT).show();
 
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            prog_dial.dismiss();
+                        }
+                    }, 1000);
+
+                    load_awal = true;
+                }
             }
 
             @Override
@@ -700,6 +736,7 @@ public class UserAreaActivity extends AppCompatActivity {
         boolean interview = false;
         boolean uploaded = false;
         String pertanyaan;
+        String durasi;
 
         public username(){}
     }

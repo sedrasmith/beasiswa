@@ -1,6 +1,7 @@
 package o.astra1st;
 
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -21,6 +22,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import common.media.CameraHelper;
@@ -43,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton captureButton;
     private CircularProgressBar circularProgressBar;
     String[] separated;
+    ArrayList<Integer> durasipertanyaan = new ArrayList<>();
+
+    //button animation
+    float[] hsv;
+    int runColor;
+    int hue = 0;
+    ValueAnimator anim;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         separated = bundle.getStringArray("daftarPertanyaan");
+        durasipertanyaan = bundle.getIntegerArrayList("durasiPertanyaan");
+
+        //button animation
+        //button animation
+
+
 
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -86,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                     //captureButton.setEnabled(true);
                     //interview
                     pertanyaan.setText(separated[counter_pertanyaan]);
-                    counter_pertanyaan++;
                     //mulai ngerekam
                     if (isRecording == false)
                     {
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    cdt_record = new CountDownTimer(10000, 1000)
+                    cdt_record = new CountDownTimer((durasipertanyaan.get(counter_pertanyaan)*1000), 1000)
                     {
                         //tampilin sisa waktu
                         public void onTick(long millisUntilFinished) {
@@ -109,13 +124,14 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 onCaptureClick();
                             }
+                            counter_pertanyaan++;
                             Switchfor();
 
                         }
                     }.start();
                     //buat progress bar
                     circularProgressBar.setColor(Color.parseColor("#D50000"));
-                    circularProgressBar.setProgressWithAnimation(0,9900);
+                    circularProgressBar.setProgressWithAnimation(0,(durasipertanyaan.get(counter_pertanyaan)*1000));
 
                 }
             }.start();
