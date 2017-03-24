@@ -114,9 +114,6 @@ public class UserAreaActivity extends AppCompatActivity {
             prog_dial.setIndeterminateDrawable(doubleBounce);
             prog_dial.setCanceledOnTouchOutside(false);
             prog_dial.setMessage("sync");
-
-            //prog_dial.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            //prog_dial.getWindow().setGravity(Gravity.CENTER_HORIZONTAL);
             prog_dial.show();
         }
 
@@ -342,6 +339,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                     Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
                                     intent.putExtra("daftarPertanyaan", separated);
                                     intent.putExtra("durasiPertanyaan", durasipertanyaan);
+                                    intent.putExtra("id", id);
                                     UserAreaActivity.this.startActivity(intent);
                                 }
                             }.start();
@@ -423,6 +421,7 @@ public class UserAreaActivity extends AppCompatActivity {
                         start.setClickable(false);
                         start.setBackgroundColor(Color.parseColor("#8BC34A"));
                         start.setText("interview done");
+                        host.setCurrentTab(3);
                     }
                     Toast.makeText(getApplicationContext(),"sync done", Toast.LENGTH_SHORT).show();
 
@@ -443,9 +442,6 @@ public class UserAreaActivity extends AppCompatActivity {
 
             }
         });
-
-
-
         //----------------------------FIREBASE-------------------------------
 
 

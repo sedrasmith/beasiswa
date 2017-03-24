@@ -3,6 +3,7 @@ package o.astra1st;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -11,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private CircularProgressBar circularProgressBar;
     String[] separated;
     ArrayList<Integer> durasipertanyaan = new ArrayList<>();
+    String id;
 
     //button animation
     float[] hsv;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         separated = bundle.getStringArray("daftarPertanyaan");
         durasipertanyaan = bundle.getIntegerArrayList("durasiPertanyaan");
+        id = bundle.getString("id");
 
         //button animation
         //button animation
@@ -143,6 +147,20 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             pertanyaan.setText("beres!!!");
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    Intent intent = new Intent(MainActivity.this, UserAreaActivity.class);
+                    intent.putExtra("id", id);
+                    MainActivity.this.startActivity(intent);
+                }
+            }, 1000);
+
+
+
+
+
         }
 
     }
@@ -239,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
         // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
         profile.videoFrameWidth = optimalSize.width;
         profile.videoFrameHeight = optimalSize.height;
 
