@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        captureButton.setOnClickListener(new View.OnClickListener() {
+         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Switchfor();
             }
@@ -91,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
         {
             //siap siap
             pertanyaan.setText("siapsiap");
+
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (8*scale + 0.5f);
+            captureButton.setPadding(dpAsPixels,0,0,0);
+            captureButton.setImageResource(R.drawable.play);
 
             cdt_persiapan = new CountDownTimer(4000, 1000)
             {
@@ -105,6 +110,27 @@ public class MainActivity extends AppCompatActivity {
                     //enable button stop
                     //captureButton.setEnabled(true);
                     //interview
+                    captureButton.setEnabled(true);
+                    captureButton.setImageResource(R.drawable.stop);
+                    float scale = getResources().getDisplayMetrics().density;
+                    int dpAsPixels = (int) (1*scale + 0.5f);
+                    captureButton.setPadding(dpAsPixels,0,0,0);
+
+                    captureButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            if (isRecording == true)
+                            {
+                                cdt_record.cancel();
+                                circularProgressBar.setProgress(0);
+                                circularProgressBar.clearFocus();
+                                circularProgressBar.clearAnimation();
+                                onCaptureClick();
+                                counter_pertanyaan++;
+                                Switchfor();
+                            }
+                        }
+                    });
+
                     pertanyaan.setText(separated[counter_pertanyaan]);
                     //mulai ngerekam
                     if (isRecording == false)
@@ -127,13 +153,15 @@ public class MainActivity extends AppCompatActivity {
                             if (isRecording == true)
                             {
                                 onCaptureClick();
+                                counter_pertanyaan++;
+                                Switchfor();
                             }
-                            counter_pertanyaan++;
-                            Switchfor();
+
 
                         }
                     }.start();
                     //buat progress bar
+                    circularProgressBar.setProgress(100);
                     circularProgressBar.setColor(Color.parseColor("#D50000"));
                     circularProgressBar.setProgressWithAnimation(0,(durasipertanyaan.get(counter_pertanyaan)*1000));
 
