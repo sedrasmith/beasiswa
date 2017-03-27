@@ -44,7 +44,7 @@
                     android:gravity="center_horizontal">
 
                     <TextView
-                        android:text="Shah Dehan Lazuardi"
+                        android:text="-"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/nama"
@@ -53,7 +53,7 @@
                         android:gravity="center_horizontal" />
 
                     <TextView
-                        android:text="Bandung, 2 Maret 1995"
+                        android:text="-"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/ttl"
@@ -74,7 +74,7 @@
                             android:layout_weight="1">
 
                             <TextView
-                                android:text="12"
+                                android:text="-"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
                                 android:id="@+id/jumlah_pertanyaan_text"
@@ -101,10 +101,10 @@
                             android:layout_weight="1">
 
                             <TextView
-                                android:text="15"
+                                android:text="-"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:id="@+id/totel_menit_text"
+                                android:id="@+id/total_menit_text"
                                 android:layout_weight="1"
                                 android:gravity="bottom|center_horizontal"
                                 android:textColor="@color/softblack"
@@ -128,7 +128,7 @@
                             android:layout_weight="1">
 
                             <TextView
-                                android:text="100"
+                                android:text="-"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
                                 android:id="@+id/total_data_text"

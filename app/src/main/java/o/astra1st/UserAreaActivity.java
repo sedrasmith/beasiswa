@@ -33,16 +33,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -83,8 +79,16 @@ public class UserAreaActivity extends AppCompatActivity {
     private Button btnSkip2, btnNext2, verifikasi2;
     //-------- var tab 2 ------------//
 
-
-
+    //-------- var tab 3 ------------//
+    private TextView jumlah_pertanyaan;// = (TextView) findViewById(R.id.jumlah_pertanyaan_text);
+    private TextView total_waktu;// = (TextView) findViewById(R.id.total_menit_text);
+    private TextView jumlah_data;// = (TextView) findViewById(R.id.total_data_text);
+    private TextView nama;// = (TextView) findViewById(R.id.nama);
+    private TextView ttl;// = (TextView) findViewById(R.id.ttl);
+    private String[] separated;
+    private ArrayList<Integer> durasipertanyaan = new ArrayList<Integer>();
+    private String[] durasi;
+    //-------- var tab 3 ------------//
 
     //-------- var tab 4 ------------//
     private static final int PICK_IMAGE_REQUEST = 234;
@@ -97,7 +101,14 @@ public class UserAreaActivity extends AppCompatActivity {
     //firebase storage reference
     private StorageReference storageReference;
     //progress upload
-    int jumlahfile=0,counterupload,flag=1;
+    File file_to_be_uploaded;
+    File[] direktori;
+    int jumlahfile=0,counterupload = 0,flag=1;
+    private TextView jumlah_video;
+    private TextView jumlah_uploaded;
+    private TextView jumlah_data_tab4;
+    private TextView nama_tab4;
+    private TextView ttl_tab4;
     //-------- var tab 4 ------------//
 
     @Override
@@ -240,6 +251,11 @@ public class UserAreaActivity extends AppCompatActivity {
         //----------------------------Tab 3-------------------------------
 
         final Button start = (Button) findViewById(R.id.start);
+        jumlah_pertanyaan = (TextView) findViewById(R.id.jumlah_pertanyaan_text);
+        total_waktu = (TextView) findViewById(R.id.total_menit_text);
+        jumlah_data = (TextView) findViewById(R.id.total_data_text);
+        nama = (TextView) findViewById(R.id.nama);
+        ttl = (TextView) findViewById(R.id.ttl);
 
         if (isinterview_done)
         {
@@ -279,6 +295,29 @@ public class UserAreaActivity extends AppCompatActivity {
             public void onClick(View v){
                 //download pertanyaan
                 start.setClickable(false);
+
+                start.setBackgroundColor(Color.parseColor("#8BC34A"));
+
+
+                new CountDownTimer(1000, 1000)
+                {
+                    public void onTick(long millisUntilFinished) {   }
+
+                    //delay 1 detik terus ganti halaman
+                    public void onFinish()
+                    {
+                        user.interview = true;
+                        myRef.child("user").child(id).child("interview").setValue(true);
+
+                        Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
+                        intent.putExtra("daftarPertanyaan", separated);
+                        intent.putExtra("durasiPertanyaan", durasipertanyaan);
+                        intent.putExtra("id", id);
+                        UserAreaActivity.this.startActivity(intent);
+                    }
+                }.start();
+
+                /*
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                 StorageReference islandRef;
 
@@ -308,41 +347,20 @@ public class UserAreaActivity extends AppCompatActivity {
                             }
                             myReader.close();
 
-                            final String[] separated = user.pertanyaan.split(",");
-                            final ArrayList<Integer> durasipertanyaan = new ArrayList<Integer>();
-                            final String[] durasi = user.durasi.split(",");
+                            //final String[] separated = user.pertanyaan.split(",");
+                            //final ArrayList<Integer> durasipertanyaan = new ArrayList<Integer>();
+                            //final String[] durasi = user.durasi.split(",");
 
-                            for(int i = 0; i < durasi.length; i++)
-                            {
-                                durasipertanyaan.add(i, Integer.parseInt(durasi[i]));
-                            }
-
-
-
-                            int length = separated.length;
-                            Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_SHORT).show();
+                            //for(int i = 0; i < durasi.length; i++)
+                            //{
+                            //    durasipertanyaan.add(i, Integer.parseInt(durasi[i]));
+                            //}
 
 
-                            start.setBackgroundColor(Color.parseColor("#8BC34A"));
 
+                            //int length = separated.length;
+                            //Toast.makeText(getApplicationContext(),"downloaded yeay = " + length, Toast.LENGTH_SHORT).show();
 
-                            new CountDownTimer(1000, 1000)
-                            {
-                                public void onTick(long millisUntilFinished) {   }
-
-                                //delay 1 detik terus ganti halaman
-                                public void onFinish()
-                                {
-                                    user.interview = true;
-                                    myRef.child("user").child(id).child("interview").setValue(true);
-
-                                    Intent intent = new Intent(UserAreaActivity.this, MainActivity.class);
-                                    intent.putExtra("daftarPertanyaan", separated);
-                                    intent.putExtra("durasiPertanyaan", durasipertanyaan);
-                                    intent.putExtra("id", id);
-                                    UserAreaActivity.this.startActivity(intent);
-                                }
-                            }.start();
 
                         } catch (Exception e) {
                             Toast.makeText(getBaseContext(), e.getMessage(),
@@ -356,6 +374,7 @@ public class UserAreaActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"fail to sync", Toast.LENGTH_SHORT).show();
                     }
                 });
+                */
 
             }
         });
@@ -364,11 +383,15 @@ public class UserAreaActivity extends AppCompatActivity {
         //----------------------------Tab 3-------------------------------
 
         //----------------------------Tab 4-------------------------------
-
         File[] dir;
         TextView keterangan;
 
         buttonUpload = (CircularProgressButton) findViewById(R.id.upload_fancy);
+        jumlah_video = (TextView) findViewById(R.id.jumlah_video);
+        jumlah_uploaded = (TextView) findViewById(R.id.video_uploaded);
+        jumlah_data_tab4 = (TextView) findViewById(R.id.total_data_text_4);
+        nama_tab4 = (TextView) findViewById(R.id.nama_tab4);
+        ttl_tab4 = (TextView) findViewById(R.id.ttl_tab4);
 
         storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -389,6 +412,10 @@ public class UserAreaActivity extends AppCompatActivity {
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 buttonUpload.setClickable(false);
+                file_to_be_uploaded = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+                direktori = file_to_be_uploaded.listFiles();
+                jumlahfile = direktori.length;
                 uploadFile();
 
             }
@@ -408,13 +435,19 @@ public class UserAreaActivity extends AppCompatActivity {
         // Read from the database
         myRef.child("user").child(id).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 user = dataSnapshot.getValue(username.class);
 
+                jumlah_uploaded.setText(Integer.toString(user.uploaded));
+
+
                 if(!load_awal)
                 {
+                    setdata_tab3();
+                    setdata_tab4();
                     isinterview_done = user.interview;
                     if (isinterview_done)
                     {
@@ -423,6 +456,7 @@ public class UserAreaActivity extends AppCompatActivity {
                         start.setText("interview done");
                         host.setCurrentTab(3);
                     }
+
                     Toast.makeText(getApplicationContext(),"sync done", Toast.LENGTH_SHORT).show();
 
                     Handler handler = new Handler();
@@ -449,36 +483,47 @@ public class UserAreaActivity extends AppCompatActivity {
 
 
 
-    private void uploadFile() {
+    private void uploadFile()
+    {
         //if there is a file to upload
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+        //File file_to_be_uploaded = new File(Environment.getExternalStoragePublicDirectory(
+        //        Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
         //+ File.separator + "VID_"+ "1" + ".mp4");
 
-        File[] direktori = file.listFiles();
-        jumlahfile = direktori.length;
+        //File[] direktori = file_to_be_uploaded.listFiles();
+        //jumlahfile = direktori.length;
 
-        for (int u = 0; u < direktori.length; u++)
-        {
-            counterupload = u + 1;
-
+        //for (int u = 0; u < direktori.length; u++)
+        //{
+        //}
             Intent data = new Intent();
-            data.setData(Uri.fromFile(direktori[u]));
+            data.setData(Uri.fromFile(direktori[counterupload]));
             filePath = data.getData();
 
-            if (filePath != null) {
+            if (filePath != null)
+            {
                 //displaying a progress dialog while upload is going on
                 //tambah counter upload
 
-                StorageReference riversRef = storageReference.child("images/VID_" + u + ".mp4");
+                StorageReference riversRef = storageReference.child( id + "/VID_" + counterupload + ".mp4");
                 riversRef.putFile(filePath)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 //if the upload is successfull
                                 //hiding the progress dialog
-
+                                if(counterupload < (direktori.length-1))
+                                {
+                                    counterupload++;
+                                    uploadFile();
+                                    myRef.child("user").child(id).child("uploaded").setValue(counterupload);
+                                }
+                                else
+                                {
+                                    buttonUpload.setProgress(100);
+                                    myRef.child("user").child(id).child("uploaded").setValue(counterupload+1);
+                                }
                                 buttonUpload.setClickable(false);
 
                                 //and displaying a success toast
@@ -500,8 +545,9 @@ public class UserAreaActivity extends AppCompatActivity {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                                 //calculating progress percentage
-                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                int progress_int = (int)progress*counterupload/jumlahfile;
+
+                                //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                int progress_int = (int)(((double)(counterupload)/jumlahfile)*100);
 
                                 if(progress_int != 0)
                                 {
@@ -511,20 +557,19 @@ public class UserAreaActivity extends AppCompatActivity {
                                 {
                                     buttonUpload.setProgress(1);
                                 }
-
-
                                 //displaying percentage in progress dialog
 
                             }
                         });
-                buttonUpload.setProgress(50);
+                //buttonUpload.setProgress(50);
             }
-            else {
+            else
+            {
                 Toast.makeText(getApplicationContext(), "faill", Toast.LENGTH_LONG).show();
                 buttonUpload.setProgress(-1);
                 buttonUpload.setClickable(true);
             }
-        }
+
     }
 
     //----------------- prosedur dan fungsi tab 1-----------------//
@@ -730,13 +775,77 @@ public class UserAreaActivity extends AppCompatActivity {
         boolean persiapan = false;
         boolean petunjuk_penggunaan = false;
         boolean interview = false;
-        boolean uploaded = false;
+        Integer uploaded = 0;
         String pertanyaan;
         String durasi;
+        String nama;
+        String TTL;
 
         public username(){}
     }
     //----------------- prosedur dan fungsi tab 1-----------------//
 
+    public void setdata_tab3()
+    {
 
+        //nama
+        nama.setText(user.nama);
+
+        //ttl
+        ttl.setText(user.TTL);
+
+        //jumah pertanyaan
+        separated = user.pertanyaan.split(",");
+        jumlah_pertanyaan.setText(Integer.toString(separated.length));
+
+        //jumlah durasi
+        Integer total_durasi = 0;
+        //final ArrayList<Integer> durasipertanyaan = new ArrayList<Integer>();
+        durasi = user.durasi.split(",");
+
+        for(int i = 0; i < durasi.length; i++)
+        {
+            durasipertanyaan.add(i, Integer.parseInt(durasi[i]));
+            total_durasi += Integer.parseInt(durasi[i]) + 7; //7 detik waktu siap siap
+        }
+
+        if (total_durasi<60)
+        {
+            total_waktu.setText("1");
+        }
+        else
+        {
+            total_waktu.setText(Integer.toString(total_durasi/60));
+        }
+
+        //jumlah data
+        jumlah_data.setText(Integer.toString(total_durasi*4/60));
+        jumlah_data_tab4.setText(Integer.toString(total_durasi*4/60));
+    }
+
+    public void setdata_tab4()
+    {
+        //nama
+        nama_tab4.setText(user.nama);
+
+        //ttl
+        ttl_tab4.setText(user.TTL);
+
+        //jumlah video
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+        File[] direktori = file.listFiles();
+        int video = direktori.length;
+        jumlah_video.setText(Integer.toString(video));
+
+        //jumlah uploaded
+        jumlah_uploaded.setText(Integer.toString(user.uploaded));
+
+        if(separated.length == user.uploaded)
+        {
+            buttonUpload.setClickable(false);
+            buttonUpload.setProgress(100);
+        }
+
+    }
 }

@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             captureButton.setPadding(dpAsPixels,0,0,0);
             captureButton.setImageResource(R.drawable.play);
 
-            cdt_persiapan = new CountDownTimer(4000, 1000)
+            cdt_persiapan = new CountDownTimer(7000, 1000)
             {
                 //tampilin sisa waktu
                 public void onTick(long millisUntilFinished)
@@ -156,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
                                 counter_pertanyaan++;
                                 Switchfor();
                             }
-
-
                         }
                     }.start();
                     //buat progress bar
@@ -170,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             captureButton.setEnabled(false);
             //buat progress bar
             circularProgressBar.setColor(Color.parseColor("#64DD17"));
-            circularProgressBar.setProgressWithAnimation(100,3900);
+            circularProgressBar.setProgressWithAnimation(100,6900);
         }
         else
         {
@@ -285,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
         // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
         profile.videoFrameWidth = optimalSize.width;
         profile.videoFrameHeight = optimalSize.height;
 
