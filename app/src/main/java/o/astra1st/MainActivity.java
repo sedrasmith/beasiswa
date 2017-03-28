@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     String[] separated;
     ArrayList<Integer> durasipertanyaan = new ArrayList<>();
     String id;
+    private List<Camera.Size> videosize;
 
     //button animation
     float[] hsv;
@@ -73,8 +74,49 @@ public class MainActivity extends AppCompatActivity {
         durasipertanyaan = bundle.getIntegerArrayList("durasiPertanyaan");
         id = bundle.getString("id");
 
+        // // Get the dimensions of the video
+        int videoWidth = 1080;
+        int videoHeight = 1920;
+        float videoProportion = (float) videoWidth / (float) videoHeight;
+
+        // Get the width of the screen
+        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+        int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+        float screenProportion = (float) screenWidth / (float) screenHeight;
+
+        // Get the SurfaceView layout parameters
+        android.view.ViewGroup.LayoutParams lp = mPreview.getLayoutParams();
+        if (videoProportion > screenProportion) {
+            lp.width = screenWidth;
+            lp.height = (int) ((float) screenWidth / videoProportion);
+        } else {
+            lp.width = (int) (videoProportion * (float) screenHeight);
+            lp.height = screenHeight;
+        }
+        // Commit the layout parameters
+        mPreview.setLayoutParams(lp);
+        //
+
+
         //button animation
         //button animation
+        /*
+        mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
+        Camera.Parameters parameters = mCamera.getParameters();
+        videosize =  parameters.getSupportedVideoSizes();
+        //debug
+        String tampilan = "";
+
+        for(int z = 0; z < videosize.size(); z++)
+        {
+            tampilan += videosize.get(z).height;
+            tampilan += " x ";
+            tampilan += videosize.get(z).width;
+            tampilan += ", ";
+        }
+        Toast.makeText(getApplicationContext(), ">>" + tampilan , Toast.LENGTH_LONG).show();
+        //debug
+        */
 
 
 
@@ -283,12 +325,18 @@ public class MainActivity extends AppCompatActivity {
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
         // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-        profile.videoFrameWidth = optimalSize.width;
-        profile.videoFrameHeight = optimalSize.height;
+
+        //Log.d()
+
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+        //profile.videoFrameWidth = 480;
+        //profile.videoFrameHeight = 640;
+        //profile.quality
+
+        //preview setting
 
         // likewise for the camera object itself.
-        parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+        parameters.setPreviewSize(1920, 1080);
         //parameters.setRotation(0);
         mCamera.setParameters(parameters);
         //mCamera.setDisplayOrientation(90);
@@ -317,12 +365,15 @@ public class MainActivity extends AppCompatActivity {
         mMediaRecorder.setCamera(mCamera);
 
 
+
         // Step 2: Set sources
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT );
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(profile);
+        mMediaRecorder.setVideoSize(1920,1080);
+        mMediaRecorder.setVideoEncodingBitRate(512*1000*3);
 
         // Step 4: Set output file
         mOutputFile = CameraHelper.getOutputMediaFile(CameraHelper.MEDIA_TYPE_VIDEO);

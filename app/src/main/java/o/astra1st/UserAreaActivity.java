@@ -841,10 +841,15 @@ public class UserAreaActivity extends AppCompatActivity {
         //jumlah uploaded
         jumlah_uploaded.setText(Integer.toString(user.uploaded));
 
-        if(separated.length == user.uploaded)
+        if( direktori.length == user.uploaded)
         {
             buttonUpload.setClickable(false);
             buttonUpload.setProgress(100);
+        }
+        else
+        {
+            buttonUpload.setClickable(true);
+            buttonUpload.setProgress(0);
         }
 
     }
