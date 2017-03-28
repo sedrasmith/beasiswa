@@ -771,15 +771,15 @@ public class UserAreaActivity extends AppCompatActivity {
     }
 
     public static class username {
-        boolean login;
-        boolean persiapan = false;
-        boolean petunjuk_penggunaan = false;
-        boolean interview = false;
-        Integer uploaded = 0;
-        String pertanyaan;
-        String durasi;
-        String nama;
-        String TTL;
+        public boolean login;
+        public boolean persiapan = false;
+        public boolean petunjuk_penggunaan = false;
+        public boolean interview = false;
+        public Integer uploaded = 0;
+        public String pertanyaan;
+        public String durasi;
+        public String nama;
+        public String TTL;
 
         public username(){}
     }

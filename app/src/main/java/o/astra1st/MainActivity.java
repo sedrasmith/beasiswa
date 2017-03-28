@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            pertanyaan.setText("beres!!!");
+            pertanyaan.setText("done");
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
