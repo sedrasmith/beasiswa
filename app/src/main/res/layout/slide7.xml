@@ -34,7 +34,7 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
-            android:text="Pergunakan tahap ini untuk merapihkan penampilan, memposisikan kamera dengan baik dan membaca pertanyaan. Setelah durasi yang diberikan habis maka secara otomatis masuk pada tahap rekaman."
+            android:text="Pergunakan tahap ini untuk merapihkan penampilan dan memposisikan kamera dengan baik. Setelah durasi yang diberikan habis maka secara otomatis masuk pada tahap rekaman."
             android:textAlignment="center"
             android:textColor="@color/softblack"
             android:textSize="14sp" />

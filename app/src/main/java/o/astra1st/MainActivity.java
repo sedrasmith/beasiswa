@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder mMediaRecorder;
     private File mOutputFile;
     private TextView timer,pertanyaan;
+    private CardView cardview;
     private boolean isInterview = true;
     private boolean isInterviewdone = false;
     private int counter_pertanyaan = 0;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         timer = (TextView) findViewById(R.id.timer);
         pertanyaan = (TextView) findViewById(R.id.pertanyaan);
         circularProgressBar = (CircularProgressBar)findViewById(R.id.progressbar);
+        cardview = (CardView)findViewById(R.id.cardview_main);
 
         Bundle bundle = getIntent().getExtras();
         separated = bundle.getStringArray("daftarPertanyaan");
@@ -132,12 +135,16 @@ public class MainActivity extends AppCompatActivity {
         if (counter_pertanyaan < separated.length)
         {
             //siap siap
-            pertanyaan.setText("siapsiap");
+            pertanyaan.setText("(Tahap Persiapan)");
+            //pertanyaan.setTextColor(Color.parseColor("#232b2b"));//item
+            //cardview.setBackgroundColor(Color.parseColor("#64DD17"));//hijau
+
+
 
             float scale = getResources().getDisplayMetrics().density;
             int dpAsPixels = (int) (8*scale + 0.5f);
             captureButton.setPadding(dpAsPixels,0,0,0);
-            captureButton.setImageResource(R.drawable.play);
+            captureButton.setImageResource(0);
 
             cdt_persiapan = new CountDownTimer(7000, 1000)
             {
@@ -174,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     pertanyaan.setText(separated[counter_pertanyaan]);
+                    //pertanyaan.setTextColor(Color.parseColor("#cfd8dc"));//putih
+                    //cardview.setBackgroundColor(Color.parseColor("#232b2b"));//item
+
                     //mulai ngerekam
                     if (isRecording == false)
                     {

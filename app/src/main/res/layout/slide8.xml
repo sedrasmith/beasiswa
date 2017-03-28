@@ -34,7 +34,7 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
-            android:text="Pada tahap ini jawaban anda akan direkam secara otomatis menggunakan kamera depan ponsel anda sesuai dengan durasi yang ditentukan. Setelah durasi yang diberikan habis maka secara otomatis masuk pada tahap persiapan pertanyaan selanjutnya."
+            android:text="Petanyaan akan muncul pada bagian atas layar ponsel anda dan jawaban anda akan direkam secara otomatis menggunakan kamera depan ponsel anda sesuai dengan durasi yang ditentukan. Setelah durasi tersebut habis maka secara otomatis masuk tahap persiapan pertanyaan selanjutnya."
             android:textAlignment="center"
             android:textColor="@color/softblack"
             android:textSize="14sp" />

@@ -186,8 +186,8 @@ public class UserAreaActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        btnSkip = (Button) findViewById(R.id.btn_skip);
-        btnNext = (Button) findViewById(R.id.btn_next);
+        //btnSkip = (Button) findViewById(R.id.btn_skip);
+       // btnNext = (Button) findViewById(R.id.btn_next);
 
 
         // adding bottom dots
@@ -211,8 +211,8 @@ public class UserAreaActivity extends AppCompatActivity {
 
         viewPager2 = (ViewPager) findViewById(R.id.view_pager2);
         dotsLayout2 = (LinearLayout) findViewById(R.id.layoutDots2);
-        btnSkip2 = (Button) findViewById(R.id.btn_skip2);
-        btnNext2 = (Button) findViewById(R.id.btn_next2);
+       // btnSkip2 = (Button) findViewById(R.id.btn_skip2);
+        //btnNext2 = (Button) findViewById(R.id.btn_next2);
 
         host.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -607,12 +607,12 @@ public class UserAreaActivity extends AppCompatActivity {
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position == layouts.length) {
                 // last page. make button text to GOT IT
-                btnNext.setText("start");
-                btnSkip.setVisibility(View.GONE);
+               // btnNext.setText("start");
+               // btnSkip.setVisibility(View.GONE);
             } else {
                 // still pages are left
-                btnNext.setText("next");
-                btnSkip.setVisibility(View.VISIBLE);
+               // btnNext.setText("next");
+               // btnSkip.setVisibility(View.VISIBLE);
             }
         }
 

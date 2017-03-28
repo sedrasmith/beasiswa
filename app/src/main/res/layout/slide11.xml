@@ -16,14 +16,14 @@
         android:layout_alignParentStart="true">
 
         <ImageView
-            android:src="@drawable/recording_tutorial"
+            android:src="@drawable/tahap_rekaman_tutorial"
             android:layout_width="wrap_content"
             android:layout_height="400dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Persiapan"
+            android:text="Tahap Rekaman"
             android:textColor="@color/softblack"
             android:textSize="24sp"
             android:textStyle="bold"

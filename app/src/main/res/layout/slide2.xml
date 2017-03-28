@@ -37,7 +37,7 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:text="Pastikan anda berada pada tempat yang hening dan pencahayaan yang cukup."
+            android:text="Pastikan anda berada pada tempat yang hening dan memilki pencahayaan yang cukup."
             android:textAlignment="center"
             android:textColor="@color/softblack"
             android:textSize="14sp" />

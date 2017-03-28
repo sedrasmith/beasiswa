@@ -37,7 +37,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             app:cardCornerRadius="7dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/cardview_main">
 
             <TextView
                 android:text="Tekan tombol di bawah untuk memulai interview"

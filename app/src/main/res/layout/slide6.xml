@@ -34,7 +34,7 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:text="Terdapat dua tahap setiap satu pertanyaan pada proses online interview yaitu persiapan dan rekaman "
+            android:text="Terdapat dua tahap setiap satu pertanyaan pada proses online interview ini yaitu tahap persiapan dan tahap rekaman"
             android:textAlignment="center"
             android:textColor="@color/softblack"
             android:textSize="14sp" />
