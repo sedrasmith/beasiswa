@@ -834,6 +834,12 @@ public class UserAreaActivity extends AppCompatActivity {
         //jumlah video
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES)+ File.separator + "CameraSample");
+
+        if (!file.exists())
+        {
+            file.mkdirs(); // this will create folder
+        }
+
         File[] direktori = file.listFiles();
         int video = direktori.length;
         jumlah_video.setText(Integer.toString(video));

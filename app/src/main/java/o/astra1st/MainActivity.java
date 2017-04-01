@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         // Get the width of the screen
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+
         float screenProportion = (float) screenWidth / (float) screenHeight;
 
         // Get the SurfaceView layout parameters
@@ -234,11 +235,6 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.startActivity(intent);
                 }
             }, 1000);
-
-
-
-
-
         }
 
     }
